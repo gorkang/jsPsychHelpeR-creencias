@@ -1,12 +1,12 @@
-##' Prepare TEMPLATE
+##' Prepare SRBQP
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_SRBQP -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_SRBQP
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,21 +14,22 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
+prepare_SRBQP <- function(DF_clean, short_name_scale_str) {
   
   # DEBUG
-  # debug_function(prepare_TEMPLATE)
+  # debug_function(prepare_SRBQP)
   
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  names_dimensions = c("CrSM", "CrP", "At") # If no dimensions, keep names_dimensions = c("")
   
-  items_DIRd1 = c("")
-  items_DIRd2 = c("")
+  items_DIRd1 = c("001", "002", "003")
+  items_DIRd2 = c("004")
+  items_DIRd3 = c("005")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -60,11 +61,13 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   mutate(
     DIR =
       case_when(
-        RAW == "Nunca" ~ 1,
-        RAW == "Poco" ~ 2,
-        RAW == "Medianamente" ~ 3,
-        RAW == "Bastante" ~ 4,
-        RAW == "Mucho" ~ 5,
+        RAW == "1 Completamente en desacuerdo" ~ 1,
+        RAW == "2 En desacuerdo" ~ 2,
+        RAW == "3 En alguna medida en desacuerdo" ~ 3,
+        RAW == "4 Ni acuerdo ni desacuerdo" ~ 4,
+        RAW == "5 En alguna medida acuerdo" ~ 5,
+        RAW == "6 De acuerdo" ~ 6,
+        RAW == "7 Completamente de acuerdo" ~ 7,
         is.na(RAW) ~ NA_real_,
         grepl(items_to_ignore, trialid) ~ NA_real_,
         TRUE ~ 9999
@@ -117,10 +120,11 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
       !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      !!name_DIRd3 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
+      
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       

@@ -1,12 +1,12 @@
-##' Prepare SDG
+##' Prepare PVC
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_SDG -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_PVC -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_SDG
+##' @title prepare_PVC
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,18 +14,21 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_SDG <- function(DF_clean, short_name_scale_str) {
-
+prepare_PVC <- function(DF_clean, short_name_scale_str) {
+  
   # DEBUG
-  # debug_function(prepare_SDG)
-
-  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  # debug_function(prepare_PVC)
+  
+  # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("AIM") # If no dimensions, keep names_dimensions = c("")
+  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  
+  items_DIRd1 = c("")
+  items_DIRd2 = c("")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -33,9 +36,8 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions,
+                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
-  
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
@@ -51,28 +53,38 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
     select(id, trialid, RAW) %>%
     
     
-  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+    # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
-
-    # Transformations
-    mutate(
-      DIR = RAW
-        # case_when(
-          
-          # TODO: This give WARNINGS -----
-          # trialid %in% c("SDG_01") ~ as.numeric(RAW), # Gives warning
-          # trialid %in% c("SDG_001", "SDG_002", "SDG_003", "SDG_004", "SDG_005", "SDG_006", "SDG_008", "SDG_009", "SDG_010", "SDG_010_1", "SDG_011", "SDG_011_1", "SDG_012") ~ RAW,
-          
-        #   is.na(RAW) ~ NA_character_,
-        #   trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
-        #   TRUE ~ "9999"
-        # )
-    ) 
+  
+  # Transformations
+  mutate(
+    DIR = RAW
+      # case_when(
+      #   trialid == "PVC_001" & RAW == "Si" ~ 1,
+      #   trialid == "PVC_001" & RAW == "No" ~ 0,
+      #   trialid == "PVC_001_1" & RAW == "Si" ~ 1,
+      #   trialid == "PVC_001_1" & RAW == "No" ~ 2,
+      #   trialid == "PVC_001_1" & RAW == "No estoy seguro" ~ 3,
+      #   is.na(RAW) ~ NA_real_,
+      #   grepl(items_to_ignore, trialid) ~ NA_real_,
+      #   TRUE ~ 9999
+      # )
+  ) %>% 
     
+    # Invert items
+    mutate(
+      # DIR = 
+      #   case_when(
+      #     DIR == 9999 ~ DIR, # To keep the missing values unchanged
+      #     trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
+      #     TRUE ~ DIR
+      #   )
+    )
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
-    
-
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
@@ -84,20 +96,40 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
     # NAs for RAW and DIR items
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-      
-    
+  
+  
+  # Reliability -------------------------------------------------------------
+  
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # items_RELd1 = REL1$item_selection_string
+  
+  
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-
-  DF_wide_RAW_DIR =
-    DF_wide_RAW 
+  # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
   
-
+  DF_wide_RAW_DIR =
+    DF_wide_RAW %>% 
+    mutate(
+      
+      # Make sure to use the correct formula: rowMeans() / rowSums()
+      
+      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      
+      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      
+      # Score Scale
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      
+    )
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
@@ -106,5 +138,5 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
- 
+  
 }

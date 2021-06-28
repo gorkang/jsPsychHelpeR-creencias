@@ -1,3 +1,9 @@
+##### TODO ######
+
+# Remember to copy the prepare_NEWTASKS() functions to jsPsychHelper
+
+
+
 
 # Initial setup -----------------------------------------------------------
 
