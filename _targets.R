@@ -59,20 +59,10 @@ targets <- list(
   
   # Use create_new_task("NAME_OF_TASK") create new preparation_scripts
   tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = 'SDG')),
-  
-  # CAS create_new_task("CAS")
   tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = "CAS")),
-  
-  # DASS21 create_new_task("DASS21")
   tar_target(df_DASS21, prepare_DASS21(DF_clean, short_name_scale_str = "DASS21")),
-  
-  # SRBQP create_new_task("SRBQP")
   tar_target(df_SRBQP, prepare_SRBQP(DF_clean, short_name_scale_str = "SRBQP")),
-  
-  # PVC create_new_task("PVC")
   tar_target(df_PVC, prepare_PVC(DF_clean, short_name_scale_str = "PVC")),
-  
-  # Report  create_new_task("Report")
   tar_target(df_Report, prepare_Report(DF_clean, short_name_scale_str = "Report")),
   
   # # tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),

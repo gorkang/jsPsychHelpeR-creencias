@@ -27,9 +27,9 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   
   names_dimensions = c("depresion", "ansiedad", "estres") # If no dimensions, keep names_dimensions = c("")
   
-  # items_DIRd1 = c("001")
-  # items_DIRd2 = c("002")
-  # items_DIRd3 = c("003")
+  items_DIRd1 = c("003", "005", "010", "013", "016", "017", "021")
+  items_DIRd2 = c("002", "004", "007", "009", "015", "019", "020")
+  items_DIRd3 = c("001", "006", "008", "011", "012", "014", "018")
   
   
   # [END ADAPT]: ***************************************************************
@@ -119,13 +119,13 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE) * 2, 
+      !!name_DIRd2 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE) * 2,
+      !!name_DIRd3 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE) * 2,
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-      # !!name_RELd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd2, "_DIR")), na.rm = TRUE),
+      # !!name_RELd1 := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      # !!name_RELd2 := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd2, "_DIR")), na.rm = TRUE),
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

@@ -56,17 +56,31 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
 
     # Transformations
     mutate(
-      DIR = RAW
-        # case_when(
+      DIR = 
+        case_when(
           
           # TODO: This give WARNINGS -----
-          # trialid %in% c("SDG_01") ~ as.numeric(RAW), # Gives warning
-          # trialid %in% c("SDG_001", "SDG_002", "SDG_003", "SDG_004", "SDG_005", "SDG_006", "SDG_008", "SDG_009", "SDG_010", "SDG_010_1", "SDG_011", "SDG_011_1", "SDG_012") ~ RAW,
+          trialid %in% c("SDG_001", "SDG_002", "SDG_003", "SDG_005", "SDG_006", "SDG_008", "SDG_009", "SDG_010_1", "SDG_011_1") ~ RAW,
+          trialid == "SDG_004" & RAW == "Femenino" ~ "0",
+          trialid == "SDG_004" & RAW == "Masculino" ~ "1",
+          trialid == "SDG_004" & RAW == "No binario" ~ "0",
           
-        #   is.na(RAW) ~ NA_character_,
-        #   trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
-        #   TRUE ~ "9999"
-        # )
+          trialid == "SDG_007" & RAW == "Menos de 100 mil" ~ "1",
+          trialid == "SDG_007" & RAW == "100 mil – 199 mil" ~ "2",
+          trialid == "SDG_007" & RAW == "200 mil – 399 mil" ~ "3",
+          trialid == "SDG_007" & RAW == "400 mil – 599 mil" ~ "4",
+          trialid == "SDG_007" & RAW == "600 mil – 799 mil" ~ "5",
+          trialid == "SDG_007" & RAW == "800 mil – 999 mil" ~ "6",
+          trialid == "SDG_007" & RAW == "1.000.000 – 1.500.000" ~ "7",
+          trialid == "SDG_007" & RAW == "Más de 1.500.000" ~ "8",
+          
+          trialid %in% c("SDG_010", "SDG_011", "SDG_012") & RAW == "No" ~ "0",
+          trialid %in% c("SDG_010", "SDG_011", "SDG_012") & RAW == "Si" ~ "1",
+          
+          is.na(RAW) ~ NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
+          TRUE ~ "9999"
+        )
     ) 
     
   # [END ADAPT]: ***************************************************************

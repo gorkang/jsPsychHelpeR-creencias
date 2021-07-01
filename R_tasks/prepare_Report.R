@@ -25,10 +25,12 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  names_dimensions = c("informe", "alias", "SoloContacto", "EmailFuturo") # If no dimensions, keep names_dimensions = c("")
   
-  items_DIRd1 = c("")
-  items_DIRd2 = c("")
+  items_DIRd1 = c("001")
+  items_DIRd2 = c("001_1")
+  items_DIRd3 = c("001_2")
+  items_DIRd4 = c("002")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -56,30 +58,35 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+  
+  
   # Transformations
   mutate(
     DIR =
       case_when(
-        RAW == "Nunca" ~ 1,
-        RAW == "Poco" ~ 2,
-        RAW == "Medianamente" ~ 3,
-        RAW == "Bastante" ~ 4,
-        RAW == "Mucho" ~ 5,
-        is.na(RAW) ~ NA_real_,
-        grepl(items_to_ignore, trialid) ~ NA_real_,
-        TRUE ~ 9999
+        
+        trialid %in% c("Report_001_1", "Report_001_2") ~ RAW,
+        trialid == "Report_001" & RAW == "No deseo recibir el informe" ~ "0",
+        trialid == "Report_001" & RAW == "Si, deseo recibir el informe" ~ "1",
+        
+        trialid == "Report_002" & RAW == "No, no acepto que mis datos sean reutilizados" ~ "0",
+        trialid == "Report_002" & RAW == "Si, acepto ser contactado en el futuro" ~ "1",
+        
+        is.na(RAW) ~ NA_character_,
+        grepl(items_to_ignore, trialid) ~ NA_character_,
+        TRUE ~ "9999"
       )
-  ) %>% 
+  )  
     
-    # Invert items
-    mutate(
-      DIR = 
-        case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
-          TRUE ~ DIR
-        )
-    )
+    # # Invert items
+    # mutate(
+    #   DIR = 
+    #     case_when(
+    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
+    #       trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
+    #       TRUE ~ DIR
+    #     )
+    # )
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -115,7 +122,11 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+      !!name_DIRd1 := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")),
+      !!name_DIRd2 := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")),
+      !!name_DIRd3 := get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")),
+      !!name_DIRd4 := ifelse(get(paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")) == 1, get(!!name_DIRd3), NA_character_)
+      
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
