@@ -63,6 +63,7 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
     DIR =
       case_when(
         RAW == "0 No me aplicó" ~ 0,
+        RAW == "0 (No me aplicó)" ~ 0,
         RAW == "1 Me aplicó un poco, o durante parte del tiempo" ~ 1,
         RAW == "2 Me aplicó bastante, o durante una buena parte del tiempo" ~ 2,
         RAW == "3 Me aplicó mucho, o la mayor parte del tiempo" ~ 3,
