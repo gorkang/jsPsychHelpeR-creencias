@@ -69,7 +69,7 @@ targets <- list(
   # # tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
   tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = 'IRS')),
   
-  tar_target(df_PBS, prepare_PSS(DF_clean, short_name_scale_str = 'PBS')), #rPBS
+  tar_target(df_PBS, prepare_PBS(DF_clean, short_name_scale_str = 'PBS')), #rPBS
   tar_target(df_PSS, prepare_PSS(DF_clean, short_name_scale_str = 'PSS')),
   
  
@@ -85,7 +85,8 @@ targets <- list(
 							 df_PSS,
 							 df_PVC,
 							 df_Report,
-							 df_SDG,
+							 df_SRBQP,
+							 df_SDG
              )),
   
 
@@ -111,7 +112,7 @@ targets <- list(
   # tar_target(table1_model_E1, analysis_model_E1_table(model_E1)),
 
   # Plots
-  # tar_target(plots_descriptive, analysis_descriptive_plots(DF_joined, DF_raw)),
+  tar_target(plots_descriptive, analysis_descriptive_plots(DF_joined, DF_raw)),
   # tar_target(plot1_model_E1, analysis_model_E1_plot(model_E1)),
   
   

@@ -22,13 +22,12 @@ prepare_PVC <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
-  
   items_DIRd1 = c("")
-  items_DIRd2 = c("")
+  
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -59,27 +58,7 @@ prepare_PVC <- function(DF_clean, short_name_scale_str) {
   # Transformations
   mutate(
     DIR = RAW
-      # case_when(
-      #   trialid == "PVC_001" & RAW == "Si" ~ 1,
-      #   trialid == "PVC_001" & RAW == "No" ~ 0,
-      #   trialid == "PVC_001_1" & RAW == "Si" ~ 1,
-      #   trialid == "PVC_001_1" & RAW == "No" ~ 2,
-      #   trialid == "PVC_001_1" & RAW == "No estoy seguro" ~ 3,
-      #   is.na(RAW) ~ NA_real_,
-      #   grepl(items_to_ignore, trialid) ~ NA_real_,
-      #   TRUE ~ 9999
-      # )
-  ) %>% 
-    
-    # Invert items
-    mutate(
-      # DIR = 
-      #   case_when(
-      #     DIR == 9999 ~ DIR, # To keep the missing values unchanged
-      #     trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
-      #     TRUE ~ DIR
-      #   )
-    )
+  ) 
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -109,22 +88,7 @@ prepare_PVC <- function(DF_clean, short_name_scale_str) {
   # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
   
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
-    mutate(
-      
-      # Make sure to use the correct formula: rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      # !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-      
-      # Score Scale
-      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
-    )
+    DF_wide_RAW 
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************

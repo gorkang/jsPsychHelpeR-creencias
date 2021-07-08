@@ -23,8 +23,8 @@ prepare_IRS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
   
@@ -38,7 +38,7 @@ prepare_IRS <- function(DF_clean, short_name_scale_str) {
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
@@ -54,7 +54,7 @@ prepare_IRS <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     mutate(
-      DIR = RAW
+      DIR = as.numeric(gsub("^([0-9]).*", "\\1", RAW))
       )
 
     

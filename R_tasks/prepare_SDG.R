@@ -22,10 +22,10 @@ prepare_SDG <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("AIM") # If no dimensions, keep names_dimensions = c("")
+  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
