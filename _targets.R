@@ -37,6 +37,7 @@
   if (file.exists("_targets/objects/TESTS") == TRUE ) targets::tar_invalidate(matches("TESTS"))
 
   
+  
 
 # Define targets -------------------------------------------------------------
   
@@ -119,16 +120,16 @@ targets <- list(
   ## Tests -------------------------------------------------------------------
   
   # [REMEMBER]: Have to manually put every target we have a test for here (except the automatic tests: 'input_files_automatic_tests_str' takes care of that)
-  # tar_target(input_files_automatic_tests_str, list.files(path = "_targets/objects/", pattern="df_*", full.names = FALSE, ignore.case = FALSE)),
+  tar_target(input_files_automatic_tests_str, list.files(path = "_targets/objects/", pattern="df_*", full.names = FALSE, ignore.case = FALSE)),
 
-  # tar_target(TESTS, test_testhat(input_files_automatic_tests_str = input_files_automatic_tests_str,
-  #                                input_files,
-  #                                DF_raw,
-  #                                DF_clean,
-  #                                DICCIONARY_tasks,
-  #                                DF_joined
-  #                                )
-  # ),
+  tar_target(TESTS, test_testhat(input_files_automatic_tests_str = input_files_automatic_tests_str,
+                                 input_files,
+                                 DF_raw,
+                                 DF_clean,
+                                 DICCIONARY_tasks,
+                                 DF_joined
+                                 )
+  ),
   
   # Report ------------------------------------------------------------------
 

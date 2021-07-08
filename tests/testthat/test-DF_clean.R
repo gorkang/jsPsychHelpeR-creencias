@@ -8,7 +8,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "DF_clean"
-  white_list = c("SASS_02", "SASS_03", "SDG_05", "SDG_07", "SDG_08") # Items where there is a conditional controlling if the question is shown
+  white_list = c("SASS_02", "SASS_03", "SDG_05", "SDG_07", "SDG_08", "PVC_001_1", "Report_001_1", "Report_001_2", "SDG_011_1", "SDG_010_1") # Items where there is a conditional controlling if the question is shown
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   # Test --------------------------------------------------------------------
