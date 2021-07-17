@@ -23,7 +23,7 @@
   main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
   data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr") #"safer", 
   data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report"
-  data_visualization_packages = c("ggalluvial", "ggridges")
+  data_visualization_packages = c("ggalluvial", "ggridges", "viridis")
   non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance")
   extra_packages = c("shrtcts")
   packages_to_load = c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages)
@@ -34,7 +34,7 @@
   
 
   # Make sure tests run always
-  if (file.exists("_targets/objects/TESTS") == TRUE ) targets::tar_invalidate(matches("TESTS"))
+  # if (file.exists("_targets/objects/TESTS") == TRUE ) targets::tar_invalidate(matches("TESTS"))
 
   
   
@@ -145,7 +145,23 @@ targets <- list(
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
+  
+
+  # Personalized report for each participant
+  tar_render_rep(report_Participants, path = here::here("doc/report_Participants.Rmd"), 
+                 params = tibble::tibble(id = 
+                                           c(DF_analysis %>% 
+                                               filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
+                                               filter(id %in% df_PVC$id) %>% # Only those that finished the experiment
+                                               head() %>% ####### REMOVE #############
+                                               pull(id))),
+                 output_dir = paste0("outputs/reports/personalized_reports"))
+             
+  
+  
+  
+  
   
 )
 

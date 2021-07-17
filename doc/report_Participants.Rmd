@@ -1,0 +1,127 @@
+---
+title: 
+output: 
+  pdf_document: 
+    fig_width: 12
+    fig_height: 9
+    fig_caption: yes
+  html_document: 
+    toc: no
+editor_options: 
+  chunk_output_type: console
+params:
+  input_files_vector: ""
+  id: 0
+fontsize: 12pt
+
+---
+
+\includegraphics{`r here::here("img/Logo_CSCN_mini.png")`}  
+
+\vspace*{10pt}
+
+## Informe personalizado  
+
+\vspace*{8pt}
+
+```{r setup, include=FALSE}
+
+# DEBUG
+# params = list(id = "932komfr7o")
+
+knitr::opts_chunk$set(echo = TRUE)
+
+DF_analysis = readr::read_rds(here::here("outputs/data/DF_analysis.rds"))
+
+DF_global =
+  DF_analysis %>% 
+  select(id, Report_informe_DIRd, Report_alias_DIRd, Report_SoloContacto_DIRd,
+         CAS_DIRt, DASS21_depresion_DIRd, DASS21_ansiedad_DIRd, DASS21_estres_DIRd, PSS_DIRt) %>% 
+  mutate(CAS_pct = ntile(CAS_DIRt, 100),
+         depresion_pct = ntile(DASS21_depresion_DIRd, 100),
+         ansiedad_pct = ntile(DASS21_ansiedad_DIRd, 100),
+         estres_pct = ntile(DASS21_estres_DIRd, 100),
+         PSS_pct = ntile(PSS_DIRt, 100),
+         )
+
+DF = 
+  DF_global %>% 
+  filter(Report_informe_DIRd == 1 & id == params$id) %>%
+  mutate(CAS = 
+           case_when(
+             CAS_DIRt < 7 ~ "baja",
+             CAS_DIRt < 14 ~ "media",
+             CAS_DIRt < 22 ~ "alta",
+             TRUE ~ NA_character_),
+         depresion = 
+           case_when(
+             DASS21_depresion_DIRd < 10 ~ "normales",
+             DASS21_depresion_DIRd < 14 ~ "leves",
+             DASS21_depresion_DIRd < 21 ~ "moderados",
+             DASS21_depresion_DIRd < 28 ~ "severos",
+             DASS21_depresion_DIRd > 27 ~ "extremadamente severos",
+             TRUE ~ NA_character_),
+         ansiedad = 
+           case_when(
+             DASS21_ansiedad_DIRd < 8 ~ "normal",
+             DASS21_ansiedad_DIRd < 10 ~ "leve",
+             DASS21_ansiedad_DIRd < 15 ~ "moderada",
+             DASS21_ansiedad_DIRd < 20 ~ "severa",
+             DASS21_ansiedad_DIRd > 19 ~ "extremadamente severa",
+             TRUE ~ NA_character_),
+         estres = 
+           case_when(
+             DASS21_estres_DIRd < 15 ~ "normal",
+             DASS21_estres_DIRd < 19 ~ "leve",
+             DASS21_estres_DIRd < 26 ~ "moderado",
+             DASS21_estres_DIRd < 34 ~ "severo",
+             DASS21_estres_DIRd > 33 ~ "extremadamente severo",
+             TRUE ~ NA_character_),
+         PSS = 
+           case_when(
+             PSS_DIRt < 14 ~ "bajo",
+             PSS_DIRt < 27 ~ "moderado",
+             PSS_DIRt < 41 ~ "alto",
+             TRUE ~ NA_character_)
+         )
+
+     PLOT =  
+       ggplot(DF %>% pivot_longer(CAS_pct:PSS_pct), aes(value, name, color = value)) +
+        geom_point(size = 4) +
+        theme(legend.position = "right") +
+        scale_x_continuous(limits = c(0, 100)) +
+        theme_minimal(base_size = 14) +
+        theme(legend.position = "right",
+              legend.title = element_blank()) +
+        labs(subtitle = "Visualización de donde se ubican tus puntajes ",
+             y = "",
+             x = "") +
+       scale_color_continuous(type = "viridis", limits = c(0, 100))
+     
+     # PLOT
+
+```
+
+Hola `r DF$Report_alias_DIRd` gracias por participar.  
+
+
+Los resultados de tus escalas, según las respuestas que has dado son los siguientes:  
+
+- Tienes ansiedad **`r DF$CAS`** al Covid (percentil: `r DF$CAS_pct`).  
+
+- En cuanto a tus niveles de depresión han sido **`r DF$depresion`**, has mostrado ansiedad **`r DF$ansiedad`** y un estrés **`r DF$estres`**.  
+
+- Tu estrés percibido es **`r DF$PSS`**.  
+
+
+---  
+
+
+```{r plot, echo=FALSE, fig.height=4, fig.width=8}
+PLOT
+```
+
+Saludos,
+
+Equipo de investigación CSCN  
+cscn.uai.cl

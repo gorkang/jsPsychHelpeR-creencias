@@ -19,11 +19,16 @@ read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, worke
   
   
   # Read all files
-  DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  DF_raw_read_raw = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
   # colClasses = c(response = "character")
   
-  if (!"response" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% rename(response = responses)
-  
+  if ("responses" %in% names(DF_raw_read_raw)) {
+    DF_raw_read = 
+      DF_raw_read_raw %>% 
+      mutate(response = 
+               case_when(is.na(responses) | responses == "" ~ response,
+                         TRUE ~ responses))
+  }
   
   # Extract information from filename
   DF_raw =
