@@ -81,7 +81,7 @@ DF =
            case_when(
              PSS_DIRt < 14 ~ "bajo",
              PSS_DIRt < 27 ~ "moderado",
-             PSS_DIRt < 41 ~ "alto",
+             PSS_DIRt > 26 ~ "alto",
              TRUE ~ NA_character_)
          )
 
@@ -102,16 +102,16 @@ DF =
 
 ```
 
-Hola `r DF$Report_alias_DIRd` gracias por participar.  
+Hola `r DF$Report_alias_DIRd`, gracias por participar.  
 
 
-Los resultados de tus escalas, según las respuestas que has dado son los siguientes:  
+Los resultados de tus escalas, según las respuestas que has dado, son los siguientes:  
 
 - Tienes ansiedad **`r DF$CAS`** al Covid (percentil: `r DF$CAS_pct`).  
 
-- En cuanto a tus niveles de depresión han sido **`r DF$depresion`**, has mostrado ansiedad **`r DF$ansiedad`** y un estrés **`r DF$estres`**.  
+- En cuanto a tus niveles de depresión han sido **`r DF$depresion`**, has mostrado ansiedad **`r DF$ansiedad`** y un estrés **`r DF$estres`** (percentiles: `r DF$depresion_pct`, `r DF$ansiedad_pct` y `r DF$estres_pct`).  
 
-- Tu estrés percibido es **`r DF$PSS`**.  
+- Tu estrés percibido es **`r DF$PSS`** (percentil: `r DF$PSS_pct`).  
 
 
 ---  
