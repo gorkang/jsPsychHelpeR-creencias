@@ -155,7 +155,7 @@ targets <- list(
                                            c(DF_analysis %>% 
                                                filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
                                                filter(id %in% df_PVC$id) %>% # Only those that finished the experiment
-                                               # head() %>% ####### REMOVE. So only the first 10 are processed #############
+                                               head() %>% ####### Only the first 10 are processed. COMMENT OUT THIS LINE TO GET ALL REPORTS #############
                                                pull(id))),
                  output_dir = paste0("outputs/reports/personalized_reports"))
   )
