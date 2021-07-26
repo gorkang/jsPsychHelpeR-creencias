@@ -149,12 +149,13 @@ targets <- list(
   
 
   # Personalized report for each participant
-  tar_render_rep(report_Participants, path = here::here("doc/report_Participants.Rmd"), 
+  tar_render_rep(report_Participants, 
+                 path = here::here("doc/report_Participants.Rmd"), 
                  params = tibble::tibble(id = 
                                            c(DF_analysis %>% 
                                                filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
                                                filter(id %in% df_PVC$id) %>% # Only those that finished the experiment
-                                               # head() %>% ####### REMOVE #############
+                                               # head() %>% ####### REMOVE. So only the first 10 are processed #############
                                                pull(id))),
                  output_dir = paste0("outputs/reports/personalized_reports"))
   )

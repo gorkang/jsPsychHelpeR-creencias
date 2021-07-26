@@ -131,7 +131,7 @@ Nota: debido a que estas son escalas independientes que evalúan característica
 
 \newpage
 
-# Tus resultados, `r DF$Report_alias_DIRd`    
+# Tus resultados, [`r DF$Report_alias_DIRd`](mailto:`r DF$Report_SoloContacto_DIRd`)    
 
 De acuerdo con tus respuestas en las escalas mencionadas anteriormente, has obtenido los siguientes resultados: 
 
