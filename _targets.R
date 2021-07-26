@@ -30,7 +30,7 @@
   
   # target options (packages, errors...)
   tar_option_set(packages = packages_to_load, # Load packages for all targets
-                 error = "workspace") # Needed to load workspace on error to debug
+                 workspace_on_error = TRUE) # Needed to load workspace on error to debug
   
 
   # Make sure tests run always
@@ -154,18 +154,12 @@ targets <- list(
                                            c(DF_analysis %>% 
                                                filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
                                                filter(id %in% df_PVC$id) %>% # Only those that finished the experiment
-                                               head() %>% ####### REMOVE #############
+                                               # head() %>% ####### REMOVE #############
                                                pull(id))),
                  output_dir = paste0("outputs/reports/personalized_reports"))
-             
-  
-  
-  
-  
-  
-)
+  )
 
 
 # Declare pipeline --------------------------------------------------------
 
-  targets
+targets
