@@ -41,6 +41,21 @@
   }
 
 
+# Latex -------------------------------------------------------------------
+  
+  if (tinytex::is_tinytex() == FALSE) {
+    tinytex::install_tinytex()
+    cat(crayon::yellow("Remember to Restart the R session before continuing...\n"))
+    
+  }
+  
+  # If "Error: callr subprocess failed: LaTeX failed to compile", run the following two lines:  
+    # update.packages(ask = FALSE, checkBuilt = TRUE)
+    # tinytex::tlmgr_install()
+    # tinytex::tlmgr_update()
+  
+  # If you are in Windows (why?), you may need to install TeX Live first: https://mirror.ctan.org/systems/texlive/tlnet/install-tl-windows.exe
+  
 # Server credentials ------------------------------------------------------
 
   # FOLLOW 1-2-3 here:
