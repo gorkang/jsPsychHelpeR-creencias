@@ -2,6 +2,7 @@
 
 # Remember to copy the prepare_NEWTASKS() functions to jsPsychHelper
 
+# SDG y Reports TIENEN DATOS SENSIBLES!!!!
 
 
 
@@ -14,7 +15,7 @@
 
 # Load libraries ---------------------------------------------------------
 
-  lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
+  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
 
 
 
@@ -40,12 +41,18 @@
 # Run project --------------------------------------------------------------
 
   targets::tar_make()
-
+  
   # IF running megatron
   # TODO : create a test with this? Or maybe just the "manual" test will be enough
   targets::tar_load(DF_joined)
   number_items_tasks(DF_joined)
 
+
+# Run in parallel ---------------------------------------------------------
+
+  # targets::tar_invalidate(matches("ids_reports"))
+  # targets::tar_make_future(workers = 12)
+  
     
 # Visualize targets networks -----------------------------------------------
 

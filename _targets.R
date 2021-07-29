@@ -148,16 +148,19 @@ targets <- list(
              output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
   
   # Create array with the id's of participants that want the report and already finished the experiment to use it in the tar_render_rep() below
-  tar_target(ids_reports, DF_analysis %>% filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
-                                          filter(id %in% df_PVC$id) %>% # Only those that finished the experiment
-                                          # head() %>% ####### Only the first 10 are processed. COMMENT OUT THIS LINE TO GET ALL REPORTS #############
-                                          pull(id)), #, format = "file" (IF files in vault/ first run fails)
-  
+  tar_target(ids_reports, 
+             DF_analysis %>% 
+               filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
+               filter(id %in% df_PVC$id) %>%   # Only those that finished the experiment
+               select(id, Report_alias_DIRd) %>% 
+               mutate(name = gsub(" ", "_", gsub(" $|^ |[;@\\.,:]", "", tolower(iconv(Report_alias_DIRd, from = 'UTF-8', to = 'ASCII//TRANSLIT'))))) # Clean up name
+             ),
+             
   # Personalized report for each participant
   tar_render_rep(report_Participants, 
                  path = here::here("doc/report_Participants.Rmd"), 
-                 params = tibble::tibble(id = ids_reports,
-                                         output_file = paste0("report_", ids_reports)),
+                 params = tibble::tibble(id = ids_reports$id,
+                                         output_file = paste0("informe_", ids_reports$id, "_", ids_reports$name)),
                  output_dir = paste0("outputs/reports/personalized_reports"))
   )
 
