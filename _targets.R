@@ -148,14 +148,8 @@ targets <- list(
              output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
   
   # Create array with the id's of participants that want the report and already finished the experiment to use it in the tar_render_rep() below
-  tar_target(ids_reports, 
-             DF_analysis %>% 
-               filter(Report_informe_DIRd == 1) %>% # Only those that wanted the report
-               filter(id %in% df_PVC$id) %>%   # Only those that finished the experiment
-               select(id, Report_alias_DIRd) %>% 
-               mutate(name = gsub(" ", "_", gsub(" $|^ |[;@\\.,:]", "", tolower(iconv(Report_alias_DIRd, from = 'UTF-8', to = 'ASCII//TRANSLIT'))))) # Clean up name
-             ),
-             
+  tar_target(ids_reports, ids_reports_create(DF_analysis, df_PVC)),
+
   # Personalized report for each participant
   tar_render_rep(report_Participants, 
                  path = here::here("doc/report_Participants.Rmd"), 
